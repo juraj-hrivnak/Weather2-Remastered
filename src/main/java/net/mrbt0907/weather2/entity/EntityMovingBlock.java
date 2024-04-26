@@ -132,7 +132,14 @@ public class EntityMovingBlock extends Entity implements IEntityAdditionalSpawnD
 				fallDistance = 0.0F;
 				collidedHorizontally = false;
 			}
-
+			
+			if(!world.isRemote)
+			{
+				Maths.Vec3 thing = new Maths.Vec3(getPosition());
+				thing.addVector(motionX, motionY, motionZ);
+				if (!world.isBlockLoaded(thing.toBlockPos(), true))
+					setDead();
+			}
 			Vec3d var1 = new Vec3d(posX, posY, posZ);
 			Vec3d var2 = new Vec3d(posX + motionX * 1.3D, posY + motionY * 1.3D, posZ + motionZ * 1.3D);
 			RayTraceResult var3 = world.rayTraceBlocks(var1, var2);

@@ -13,6 +13,7 @@ import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.mrbt0907.configex.ConfigManager;
 import net.mrbt0907.weather2.api.WeatherAPI;
 import net.mrbt0907.weather2.block.TileAnemometer;
 import net.mrbt0907.weather2.block.TileSiren;
@@ -33,10 +34,12 @@ import net.mrbt0907.weather2.client.event.ClientTickHandler;
 import net.mrbt0907.weather2.client.foliage.FoliageEnhancerShader;
 import net.mrbt0907.weather2.client.gui.GuiWeather;
 import net.mrbt0907.weather2.client.rendering.ParticleManagerEX;
+import net.mrbt0907.weather2.config.ConfigParticle;
 import net.mrbt0907.weather2.entity.EntityIceBall;
 import net.mrbt0907.weather2.entity.EntityLightningBolt;
 import net.mrbt0907.weather2.entity.EntityLightningBoltCustom;
 import net.mrbt0907.weather2.entity.EntityMovingBlock;
+import net.mrbt0907.weather2.util.WeatherUtil;
 @SideOnly(Side.CLIENT)
 @Mod.EventBusSubscriber(value = Side.CLIENT, modid = Weather2.MODID)
 public class ClientProxy extends CommonProxy
@@ -99,6 +102,12 @@ public class ClientProxy extends CommonProxy
 		guiWeather = new GuiWeather();
 		WeatherAPI.refreshRenders(true);
 		MinecraftForge.EVENT_BUS.register(guiWeather);
+		if (WeatherUtil.isAprilFoolsDay())
+		{
+			ConfigParticle.particle_renderer = "2";
+			ConfigManager.save("Weather2 Remastered - Client");
+			
+		}
 	}
 	
 	@Override

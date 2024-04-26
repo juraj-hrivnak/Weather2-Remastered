@@ -41,6 +41,7 @@ public class ParticleRegistry
 	public static TextureAtlasSprite radarIconColdFront;
 	public static TextureAtlasSprite radarIconOccludedFront;
 	public static TextureAtlasSprite radarIconStationaryFront;
+	public static TextureAtlasSprite concerned;
 	
 	public static void init(TextureStitchEvent.Pre event)
 	{
@@ -71,6 +72,7 @@ public class ParticleRegistry
 		radarIconColdFront = event.getMap().registerSprite(new ResourceLocation(Weather2.OLD_MODID + ":radar/radar_icon_cold_front"));
 		radarIconOccludedFront = event.getMap().registerSprite(new ResourceLocation(Weather2.OLD_MODID + ":radar/radar_icon_occluded_front"));
 		radarIconStationaryFront = event.getMap().registerSprite(new ResourceLocation(Weather2.OLD_MODID + ":radar/radar_icon_stationary_front"));
+		concerned = event.getMap().registerSprite(new ResourceLocation(Weather2.OLD_MODID + ":particles/concerned"));
 	}
 
 	public static void initPost(TextureStitchEvent.Post event)

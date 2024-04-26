@@ -4,10 +4,15 @@ import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nullable;
 
+import net.minecraft.block.Block;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.NumberInvalidException;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -16,6 +21,7 @@ import net.mrbt0907.configex.ConfigManager;
 import net.mrbt0907.weather2.Weather2;
 import net.mrbt0907.weather2.api.WeatherAPI;
 import net.mrbt0907.weather2.api.weather.WeatherEnum.Stage;
+import net.mrbt0907.weather2.config.ConfigGrab;
 import net.mrbt0907.weather2.config.ConfigStorm;
 import net.mrbt0907.weather2.config.EZConfigParser;
 import net.mrbt0907.weather2.network.packets.PacketRefresh;
@@ -72,7 +78,7 @@ public class CommandWeather2 extends CommandBase
 				switch(args[0])
 				{
 					case "config":
-						return getListOfStringsMatchingLastWord(args, new String[] {"refresh"});
+						return getListOfStringsMatchingLastWord(args, new String[] {"refresh", "grablist"});
 					case "create":
 						return getListOfStringsMatchingLastWord(args, new String[] {"random", "clouds", "rainstorm", "thunderstorm", "supercell", "tropicaldisturbance", "tropicaldepression" , "tropicalstorm", "sandstorm", "ef#", "f#", "c#"});
 					case "kill":
@@ -95,6 +101,14 @@ public class CommandWeather2 extends CommandBase
 			case 3:
 				switch(args[0])
 				{
+					case "config":
+						switch(args[1])
+						{
+							case "grablist":
+								return getListOfStringsMatchingLastWord(args, new String[] {"addGrabEntry", "addReplaceEntry"});
+							default:
+								return Collections.emptyList();
+						}
 					case "create":
 						return getListOfStringsMatchingLastWord(args, new String[] {"~"});
 					default:
@@ -125,6 +139,77 @@ public class CommandWeather2 extends CommandBase
 					if (size > 1)
 						switch (args[1].toLowerCase())
 						{
+							case "grablist":
+								if (size > 2)
+								{
+									boolean isPlayer = sender instanceof EntityPlayer;
+									Item itemMain = isPlayer ? ((EntityPlayer)sender).getHeldItemMainhand().getItem() : null;
+									Block blockMain = isPlayer && itemMain != Items.AIR ? Block.getBlockFromItem(itemMain) : null;
+									String entryMain = blockMain == null ? "" : blockMain.getRegistryName().toString();
+									if (blockMain == null && size > 3)
+									{
+										entryMain = args[3];
+									}
+									switch (args[2].toLowerCase())
+									{
+										case "addgrabentry":
+											if (entryMain.isEmpty())
+											{
+												say(sender, "config.grablist.addgrabentry.fail");
+											}
+											else
+											{
+												if (ConfigGrab.grab_list_entries.isEmpty())
+													ConfigGrab.grab_list_entries += entryMain;
+												else
+													ConfigGrab.grab_list_entries += ", " + entryMain;
+												say(sender, "config.grablist.addgrabentry.success");
+												ConfigManager.save("Weather2 Remastered - Grab");
+											}
+											break;
+										case "addreplaceentry":
+											Item itemSecondary = isPlayer ? ((EntityPlayer)sender).getHeldItemOffhand().getItem() : null;
+											Block blockSecondary = isPlayer && itemSecondary != Items.AIR ? Block.getBlockFromItem(itemSecondary) : null;
+											String entrySecondary = blockSecondary == null ? "" : blockSecondary.getRegistryName().toString();
+											if (blockSecondary == null && size > 4)
+											{
+												entrySecondary = args[4];
+											}
+											if (entryMain.isEmpty() || entrySecondary.isEmpty())
+											{
+												say(sender, "config.grablist.addreplaceentry.fail");
+											}
+											else
+											{
+												if (ConfigGrab.replace_list_entries.isEmpty())
+													ConfigGrab.replace_list_entries += entryMain + "=" + entrySecondary;
+												else
+													ConfigGrab.replace_list_entries += ", " + entryMain + "=" + entrySecondary;
+												say(sender, "config.grablist.addreplaceentry.success");
+												ConfigManager.save("Weather2 Remastered - Grab");
+											}
+											break;
+										case "addwindentry":
+											
+											if (entryMain.isEmpty() || args.length <= 3)
+											{
+												say(sender, "config.grablist.addwindentry.fail");
+											}
+											else
+											{
+												int index = size > 4 ? 4 : 3;
+												if (ConfigGrab.wind_resistance_entries.isEmpty())
+													ConfigGrab.wind_resistance_entries += entryMain + "=" + args[index].replaceAll("[^\\d\\.]", "");
+												else
+													ConfigGrab.wind_resistance_entries += ", " + entryMain + "=" + args[index].replaceAll("[^\\d\\.]", "");
+												say(sender, "config.grablist.addwindentry.success");
+												ConfigManager.save("Weather2 Remastered - Grab");
+											}
+											
+											break;
+									}
+								}
+								break;
 							case "refresh":
 								if (size > 2)
 									switch (args[2].toLowerCase())

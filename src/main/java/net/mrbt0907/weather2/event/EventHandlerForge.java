@@ -25,6 +25,7 @@ import net.mrbt0907.weather2.api.event.EventRegisterParticleRenderer;
 import net.mrbt0907.weather2.client.NewSceneEnhancer;
 import net.mrbt0907.weather2.client.event.ClientTickHandler;
 import net.mrbt0907.weather2.client.foliage.FoliageEnhancerShader;
+import net.mrbt0907.weather2.client.rendering.April24StormRenderer;
 import net.mrbt0907.weather2.client.rendering.LegacyStormRenderer;
 import net.mrbt0907.weather2.config.ConfigFoliage;
 import net.mrbt0907.weather2.config.ConfigMisc;
@@ -44,6 +45,7 @@ public class EventHandlerForge
 	public void onParticleRendererRegister(EventRegisterParticleRenderer event)
 	{
 		event.register(new ResourceLocation(Weather2.MODID, "legacy"), LegacyStormRenderer.class);
+		event.register(new ResourceLocation(Weather2.MODID, "april24"), April24StormRenderer.class);
 	}
 	
 	@SubscribeEvent

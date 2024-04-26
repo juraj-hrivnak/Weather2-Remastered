@@ -639,16 +639,17 @@ public class StormObject extends WeatherObject implements IWeatherRain, IWeather
 					rain = MINIMUM_DRIZZLE;
 				
 				//force storms to die if its no longer raining while overcast mode is active
-				if (ConfigMisc.overcast_mode && isNatural && !neverDissipate && !manager.getWorld().isRaining())
-				{
-					Weather2.debug("Storm " + getUUID().toString() + " was forced to dissipate because of overcast mode at stage " + stage + " and is now dying");
-					isDying = true;
-				}
-				else if (ConfigStorm.disable_tornados && stormType == StormType.LAND.ordinal() || ConfigStorm.disable_cyclones && stormType == StormType.WATER.ordinal())
-				{
-					Weather2.debug("Storm " + getUUID().toString() + " was forced to dissipate because it was disabled at stage " + stage + " and is now dying");
-					isDying = true;
-				}
+				if (!isDying)
+					if (ConfigMisc.overcast_mode && isNatural && !neverDissipate && !manager.getWorld().isRaining())
+					{
+						Weather2.debug("Storm " + getUUID().toString() + " was forced to dissipate because of overcast mode at stage " + stage + " and is now dying");
+						isDying = true;
+					}
+					else if (ConfigStorm.disable_tornados && stormType == StormType.LAND.ordinal() || ConfigStorm.disable_cyclones && stormType == StormType.WATER.ordinal())
+					{
+						Weather2.debug("Storm " + getUUID().toString() + " was forced to dissipate because it was disabled at stage " + stage + " and is now dying");
+						isDying = true;
+					}
 					
 				if (stage == Stage.SEVERE.getStage() && hasWater)
 				{

@@ -280,6 +280,7 @@ public class FrontObject implements IWeatherDetectable
 	public void removeWeatherObject(UUID uuid)
 	{
 		WeatherObject system = systems.get(uuid);
+		if (system == null) return;
 		system.reset();
 		manager.removeWeatherObject(uuid);
 		
